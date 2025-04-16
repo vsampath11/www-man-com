@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Facebook</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+    body { background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    .login-box { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 0 15px rgba(0,0,0,0.1); text-align: center; }
+    input { display: block; width: 100%; margin: 1rem 0; padding: 0.75rem; border-radius: 4px; border: 1px solid #ccc; }
+    button { padding: 0.75rem 2rem; background-color: #1877f2; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+    #overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: black;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      flex-direction: column;
+      color: white;
+      font-size: 2rem;
+    }
+    .flash {
+      animation: flashAnim 0.3s alternate infinite;
+    }
+    @keyframes flashAnim {
+      from { background-color: white; }
+      to { background-color: #f0f2f5; }
+    }
+    #hacked-message {
+      display: none;
+      color: red;
+      font-size: 2rem;
+      margin-top: 1rem;
+    }
+    .keyboard-popup {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.8);
+      padding: 1rem;
+      color: white;
+      font-size: 1.5rem;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <h2>Facebook Login</h2>
+    <input type="text" placeholder="Email or Phone" />
+    <input type="password" placeholder="Password" />
+    <button onclick="triggerPrank()">Log In</button>
+  </div>
+
+  <div id="overlay">
+    <div id="countdown">3</div>
+  </div>
+
+  <audio id="prankSound">
+    <source src="https://www.soundjay.com/button/beep-07.wav" type="audio/wav">
+  </audio>
+
+  <div id="hacked-message">
+    🔥 Your phone has been hacked!
+  </div>
+
+  <div class="keyboard-popup">
+    👨‍💻 Keyboard popped up!
+  </div>
+
+  <script>
+    function triggerPrank() {
+      document.getElementById('overlay').style.display = 'flex';
+      const countdownEl = document.getElementById('countdown');
+      const sound = document.getElementById('prankSound');
+      const hackedMessage = document.getElementById('hacked-message');
+      const keyboardPopup = document.querySelector('.keyboard-popup');
+
+      let count = 3;
+      const interval = setInterval(() => {
+        count--;
+        if (count > 0) {
+          countdownEl.textContent = count;
+          sound.play();
+        } else {
+          clearInterval(interval);
+          countdownEl.textContent = '';
+          document.body.classList.add('flash');
+          sound.play();
+
+          // Vibrate if supported
+          if (navigator.vibrate) {
+            navigator.vibrate([300, 200, 300]);
+          }
+
+          // Show fake camera overlay (optional)
+          countdownEl.innerHTML = '<div style="font-size:1.5rem;">📷 Accessing camera...</div>';
+
+          // Show "Your phone has been hacked!" message after 5 seconds
+          setTimeout(() => {
+            hackedMessage.style.display = 'block';
+          }, 5000);
+
+          // Show fake keyboard popup
+          setTimeout(() => {
+            keyboardPopup.style.display = 'block';
+          }, 10000);
+
+          // Play alarm sound after 10 seconds
+          setTimeout(() => {
+            new Audio('https://www.soundjay.com/button/beep-01a.wav').play();
+          }, 10000);
+
+          setTimeout(() => {
+            document.body.classList.remove('flash');
+            document.getElementById('overlay').style.display = 'none';
+            keyboardPopup.style.display = 'none';
+          }, 60000); // 60 seconds
+        }
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
